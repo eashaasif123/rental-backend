@@ -1,13 +1,13 @@
 import express from 'express'
 import { v4 as uuidv4 } from 'uuid';
 import multer from 'multer'
-import { loginUser, RegisterUser } from '../Controller/RegisterationController.js';
+import { uploadLeads, getLeads } from '../Controller/LeadsController.js';
 
-const RegisterationRoutes = express.Router();
+const LeadsRoutes = express.Router();
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads/');
+        cb(null, 'leads/');
     },
     filename: (req, file, cb) => {
         console.log(file)
@@ -19,5 +19,5 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-RegisterationRoutes.route('/').post(upload.single('file'), RegisterUser).get(loginUser);
-export default RegisterationRoutes
+LeadsRoutes.route('/').get(getLeads).post(upload.single('file'), uploadLeads);
+export default LeadsRoutes

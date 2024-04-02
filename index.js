@@ -4,15 +4,20 @@ import morgan from 'morgan'
 import { config } from 'dotenv';
 import connectDB from './config/dbConnection.js';
 import RegisterationRoutes from './Routes/Registerationroutes.js';
+import LeadsRoutes from './Routes/LeadsRoutes.js';
 
 const app = express();
+app.use(cors());
+app.use(express.urlencoded({ extended: true }));
+app.use('/files', express.static('./uploads'))
+app.use('/leads', express.static('./leads'))
 app.use(express.json());
 app.use(morgan('dev'))
-app.use(cors());
 config();
 
+app.use('/api/register', RegisterationRoutes)
+app.use('/api/leads', LeadsRoutes)
 
-app.use('/register', RegisterationRoutes)
 app.get('/', (req, res) => {
     res.status(200).json({
         message: 'Server Connected'
