@@ -18,6 +18,10 @@ const LeadsSchema = new mongoose.Schema(
             type: Number,
             default: ''
         },
+        isAssigned: {
+            type: Boolean,
+            default: false
+        }
     },
     {
         timestamps: true,

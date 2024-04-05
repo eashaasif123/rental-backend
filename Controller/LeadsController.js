@@ -33,12 +33,26 @@ export const uploadLeads = async (req, res) => {
 };
 
 export const getLeads = async (req, res) => {
-    console.log("getting...")
     try {
-        const leads = await LeadsModel.find();
+        let query = {};
+
+        switch (req.query.type) {
+            case 'all':
+                break;
+            case 'unassigned':
+                query.isAssigned = false;
+                break;
+            case 'assigned':
+                query.isAssigned = true;
+                break;
+            default:
+                return res.status(400).json({ message: 'Invalid type parameter' });
+        }
+
+        const leads = await LeadsModel.find(query);
         res.status(200).json(leads);
     } catch (err) {
-        console.log(err.message);
-        res.status(400).json({ message: err.message });
+        console.error(err.message);
+        res.status(500).json({ message: 'Internal server error' });
     }
 };

@@ -53,3 +53,30 @@ export const loginUser = async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
+
+
+export async function getAllEmployees(req, res) {
+    try {
+        let query = { isAdmin: false };
+
+        switch (req.query.type) {
+            case 'generalManager':
+                query.isGeneralManager = true;
+                break;
+            case 'manager':
+                query.isManager = true;
+                break;
+            case 'employee':
+                query.isEmployee = true;
+                break;
+            default:
+                break;
+        }
+
+        const employees = await Registration.find(query);
+        return res.status(200).json(employees);
+    } catch (error) {
+        console.error(error.message);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+}

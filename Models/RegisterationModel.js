@@ -36,6 +36,22 @@ const registrationSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
+        isAdmin: {
+            type: Boolean,
+            default: false
+        },
+        isManager: {
+            type: Boolean,
+            default: false
+        },
+        isGeneralManager: {
+            type: Boolean,
+            default: false
+        },
+        isEmployee: {
+            type: Boolean,
+            default: true
+        }
     },
     {
         timestamps: true,
