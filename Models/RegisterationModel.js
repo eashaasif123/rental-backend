@@ -40,17 +40,17 @@ const registrationSchema = new mongoose.Schema(
             type: Boolean,
             default: false
         },
-        isManager: {
+        isGeneralManager: {
             type: Boolean,
             default: false
         },
-        isGeneralManager: {
+        isManager: {
             type: Boolean,
             default: false
         },
         isEmployee: {
             type: Boolean,
-            default: true
+            default: false
         }
     },
     {

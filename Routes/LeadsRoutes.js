@@ -1,8 +1,8 @@
 import express from 'express'
 import { v4 as uuidv4 } from 'uuid';
 import multer from 'multer'
-import { uploadLeads, getLeads } from '../Controller/LeadsController.js';
-import { assignLead } from '../Controller/assignLeads.js';
+import { uploadLeads, getLeads, getLeadsByEmployeeID } from '../Controller/LeadsController.js';
+import { assignLead, getLeadsLimit } from '../Controller/assignLeads.js';
 
 
 const LeadsRoutes = express.Router();
@@ -22,5 +22,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 LeadsRoutes.route('/').get(getLeads).post(upload.single('file'), uploadLeads);
+LeadsRoutes.route('/limit').get(getLeadsLimit);
+LeadsRoutes.route('/:employeeID').get(getLeadsByEmployeeID);
 LeadsRoutes.route('/assign').post(assignLead);
 export default LeadsRoutes

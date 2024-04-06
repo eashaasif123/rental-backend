@@ -1,6 +1,7 @@
 import LeadsModel from "../Models/Leads.js";
 import csv from 'csvtojson';
 import xlsx from 'xlsx'; // or import exceljs from 'exceljs';
+import LeadsStatus from "../Models/LeadsStatus.js";
 
 export const uploadLeads = async (req, res) => {
     try {
@@ -33,23 +34,28 @@ export const uploadLeads = async (req, res) => {
 };
 
 export const getLeads = async (req, res) => {
+    console.log("getting...")
     try {
-        let query = {};
+        const leads = await LeadsModel.find();
+        res.status(200).json(leads);
+    } catch (err) {
+        console.log(err.message);
+        res.status(400).json({ message: err.message });
+    }
+};
 
-        switch (req.query.type) {
-            case 'all':
-                break;
-            case 'unassigned':
-                query.isAssigned = false;
-                break;
-            case 'assigned':
-                query.isAssigned = true;
-                break;
-            default:
-                return res.status(400).json({ message: 'Invalid type parameter' });
+export const getLeadsByEmployeeID = async (req, res) => {
+    try {
+        const { employeeID } = req.params;
+
+        // Validate if employeeID is provided
+        if (!employeeID) {
+            return res.status(400).json({ message: 'EmployeeID is required' });
         }
 
-        const leads = await LeadsModel.find(query);
+        // Find all leads assigned to the specified employeeID
+        const leads = await LeadsStatus.find({ EmployeeID: employeeID });
+
         res.status(200).json(leads);
     } catch (err) {
         console.error(err.message);

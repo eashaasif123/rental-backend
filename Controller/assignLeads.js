@@ -4,21 +4,24 @@ import LeadsStatus from './../Models/LeadsStatus.js';
 export const assignLead = async (req, res) => {
     try {
         const leads = req.body.leads;
-        for(const item of leads){
+        for (const item of leads) {
             const lead = await LeadsModel.findById(item.id);
             lead.isAssigned = true;
-            const details = lead.leadStatus || [];
-            details.push({
+            lead.leadStatus.push({
                 message: 'Lead assigned successfully',
                 date: new Date()
-            })
-            lead.leadStatus = details;
+            });
+            console.log(lead);
             await lead.save();
             await LeadsStatus.deleteMany({ leadID: item.id });
-            new LeadsStatus({
+            await new LeadsStatus({
                 leadID: item.id,
-                EmployeeID: req.body.EmployeeID
-            })
+                EmployeeID: req.body.EmployeeID,
+                name: lead.name,
+                email: lead.email,
+                source: lead.source,
+                phone: lead.phone,
+            }).save();
         }
         res.status(200).json({ message: 'Lead assigned successfully' });
     } catch (err) {
@@ -52,6 +55,23 @@ export const getLeadById = async (req, res) => {
         }
 
         res.status(200).json(lead);
+    } catch (err) {
+        console.log(err.message);
+        res.status(400).json({ message: err.message });
+    }
+};
+
+export const getLeadsLimit = async (req, res) => {
+    console.log("getting...");
+    try {
+        const { num } = req.query;
+        const limit = parseInt(num) || 5; // Default to fetching top 5 leads if num is not provided or invalid
+
+        const totalLeads = await LeadsModel.find();
+        // Fetch the top N leads sorted by the latest date
+        const leads = await LeadsModel.find().sort({ createdAt: -1 }).limit(limit);
+
+        res.status(200).json({ leads, totalLeads: totalLeads.length });
     } catch (err) {
         console.log(err.message);
         res.status(400).json({ message: err.message });

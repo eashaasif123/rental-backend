@@ -21,7 +21,13 @@ const LeadsSchema = new mongoose.Schema(
         isAssigned: {
             type: Boolean,
             default: false
-        }
+        },
+        leadStatus: [
+            {
+                message: String,
+                date: Date
+            }
+        ]
     },
     {
         timestamps: true,
