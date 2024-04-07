@@ -34,9 +34,16 @@ export const uploadLeads = async (req, res) => {
 };
 
 export const getLeads = async (req, res) => {
-    console.log("getting...")
+    const {type} = req.query;
+    const queries = {};
+    if(type === 'assigned')
+    {
+        queries.isAssigned = true;
+    }else if(type==='unassigned'){
+        queries.isAssigned = false;
+    }
     try {
-        const leads = await LeadsModel.find();
+        const leads = await LeadsModel.find(queries);
         res.status(200).json(leads);
     } catch (err) {
         console.log(err.message);
